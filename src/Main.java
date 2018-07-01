@@ -67,6 +67,7 @@ public class Main {
                     (int) Math.ceil(Math.random() * windowHeight)));
         }
 
+        System.out.println(al.toString());
         AnimationTimer at = new AnimationTimer() {
             @Override
             public void handle(long now) {
