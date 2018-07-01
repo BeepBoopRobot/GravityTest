@@ -7,12 +7,12 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class Main {
     public static void main(String[] args) {
@@ -20,8 +20,8 @@ public class Main {
         Platform.runLater(Main::launch);
     }
 
-    private static int windowWidth = 800;
-    private static int windowHeight = 500;
+    private static int windowWidth = 1000;
+    private static int windowHeight = 1000;
 
     static int getWindowWidth() {
         return windowWidth;
@@ -67,8 +67,6 @@ public class Main {
                     (int) Math.ceil(Math.random() * windowHeight)));
         }
 
-        System.out.println(al.toString());
-//kys
         AnimationTimer at = new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -76,28 +74,8 @@ public class Main {
                 for (Point p : al) {
                     gc.fillRect(p.getPosX(), p.getPosY(), 5, 5);
                     gc.fillText(String.valueOf(al.indexOf(p)), p.getPosX() + 6, p.getPosY() + 6);
-                    for (Point a : al) {
-                        if (a == p) break;
-                        int col = al.indexOf(a);
-                        switch (col) {
-                            case 0:
-                                gc.setStroke(Color.web("#2ec46d"));
-                                break;
-                            case 1:
-                                gc.setStroke(Color.web("#431282"));
-                                break;
-                            case 2:
-                                gc.setStroke(Color.web("#431282"));
-                                break;
-                            case 3:
-                                gc.setStroke(Color.web("#431282"));
-                                break;
-
-                        }
-                        gc.strokeLine(p.getPosX(), p.getPosY(), a.getPosX(), a.getPosY());
-                    }
-                    gc.setStroke(Color.BLACK);
                 }
+                drawLines(al, gc);
                 for (Point p : al) p.update();
 
             }
@@ -111,5 +89,23 @@ public class Main {
         scene.setOnMouseReleased(me -> {
             at.start();
         });
+    }
+
+    private static void drawLines(ArrayList<Point> temp, GraphicsContext gc) {
+        Stack<Point> stack = new Stack<>();
+        for(Point p: temp) stack.push(p);
+        while (stack.size() != 1) {
+            Point p = stack.peek();
+            for (Point a : stack) {
+                if (a == p) break;
+                gc.strokeLine(p.getPosX(), p.getPosY(), a.getPosX(), a.getPosY());
+                double distance = Math.hypot(a.getPosX() - p.getPosX(), a.getPosY() - p.getPosY());
+
+                gc.fillText(String.valueOf((float)distance),
+                        p.getPosX() + ((a.getPosX() - p.getPosX())/2),
+                        p.getPosY() + ((a.getPosY() - p.getPosY())/2));
+            }
+            stack.pop();
+        }
     }
 }
