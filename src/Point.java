@@ -2,13 +2,13 @@ public class Point {
     private double dx;
     private double dy;
     private double posX;
-    private int mass;
+    private long mass;
 
-    public int getMass() {
+    public long getMass() {
         return mass;
     }
 
-    public void setMass(int mass) {
+    public void setMass(long mass) {
         this.mass = mass;
     }
 

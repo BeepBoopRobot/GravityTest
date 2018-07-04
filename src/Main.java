@@ -69,10 +69,11 @@ public class Main {
                     Math.ceil(Math.random() * 5),
                     (int) Math.ceil(Math.random() * windowWidth),
                     (int) Math.ceil(Math.random() * windowHeight),
-                    (int) Math.ceil(Math.random() * 1000000)));
+                    (int) Math.ceil(Math.random() * 100000 + 50000)));
         }
         FrameRegulator fr = new FrameRegulator();
         calcForce(al.get(0), al.get(1));
+
         AnimationTimer at = new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -114,11 +115,12 @@ public class Main {
         }
     }
 
-    private static double G = 6.67408 * Math.pow(10, -11);
+    private static double G = 4 ;
 
     private static void calcForce(Point m1, Point m2) {
-        //System.out.println(G);
-        double top = m1.getMass() * m2.getMass() * G;
+        System.out.println(4000 * (6.67408 * Math.pow(10, -11)));
+        System.out.println("M1 Mass: " + m1.getMass() + ", M2 mass: " + m2.getMass() + ", Distance: " + Math.hypot(m2.getPosX() - m1.getPosX(), m2.getPosY() - m1.getPosY()));
+        double top = m1.getMass() * m2.getMass() * (6.67408 * Math.pow(10, -11));
         System.out.println("Top: " + top);
         double bottom = Math.pow(Math.hypot(m2.getPosX() - m1.getPosX(), m2.getPosY() - m1.getPosY()), 2);
         System.out.println("Bottom: " + bottom);
