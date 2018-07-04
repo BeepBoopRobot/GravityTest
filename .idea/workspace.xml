@@ -21,10 +21,9 @@
       <file leaf-file-name="Main.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="498">
-              <caret line="128" column="25" selection-start-line="128" selection-start-column="25" selection-end-line="128" selection-end-column="25" />
+            <state relative-caret-position="192">
+              <caret line="12" column="33" selection-start-line="12" selection-start-column="33" selection-end-line="12" selection-end-column="33" />
               <folding>
-                <element signature="imports" expanded="true" />
                 <element signature="e#2400#2928#0" expanded="true" />
                 <element signature="e#2927#2928#0" expanded="true" />
               </folding>
@@ -49,8 +48,8 @@
       <file leaf-file-name="Point.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Point.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="480">
-              <caret line="63" column="56" selection-start-line="63" selection-start-column="56" selection-end-line="63" selection-end-column="56" />
+            <state relative-caret-position="48">
+              <caret line="6" column="4" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="4" />
               <folding>
                 <element signature="e#131#132#0" expanded="true" />
                 <element signature="e#158#159#0" expanded="true" />
@@ -268,7 +267,6 @@
         <state relative-caret-position="112">
           <caret line="7" column="14" selection-start-line="7" selection-start-column="14" selection-end-line="7" selection-end-column="14" />
           <folding>
-            <element signature="imports" expanded="true" />
             <element signature="e#2400#2928#0" expanded="true" />
             <element signature="e#2927#2928#0" expanded="true" />
           </folding>
@@ -311,7 +309,6 @@
         <state relative-caret-position="1648">
           <caret line="103" selection-start-line="103" selection-end-line="103" />
           <folding>
-            <element signature="imports" expanded="true" />
             <element signature="e#2400#2928#0" expanded="true" />
             <element signature="e#2927#2928#0" expanded="true" />
           </folding>
@@ -354,7 +351,6 @@
         <state relative-caret-position="1120">
           <caret line="70" column="5" selection-start-line="70" selection-start-column="5" selection-end-line="70" selection-end-column="5" />
           <folding>
-            <element signature="imports" expanded="true" />
             <element signature="e#2400#2928#0" expanded="true" />
             <element signature="e#2927#2928#0" expanded="true" />
           </folding>
@@ -387,7 +383,6 @@
         <state relative-caret-position="144">
           <caret line="10" selection-start-line="10" selection-end-line="10" />
           <folding>
-            <element signature="imports" expanded="true" />
             <element signature="e#2400#2928#0" expanded="true" />
             <element signature="e#2927#2928#0" expanded="true" />
           </folding>
@@ -398,7 +393,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <folding>
-            <element signature="imports" expanded="true" />
             <element signature="e#2400#2928#0" expanded="true" />
             <element signature="e#2927#2928#0" expanded="true" />
           </folding>
@@ -568,8 +562,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Point.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
-          <caret line="63" column="56" selection-start-line="63" selection-start-column="56" selection-end-line="63" selection-end-column="56" />
+        <state relative-caret-position="48">
+          <caret line="6" column="4" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="4" />
           <folding>
             <element signature="e#131#132#0" expanded="true" />
             <element signature="e#158#159#0" expanded="true" />
@@ -589,10 +583,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="498">
-          <caret line="128" column="25" selection-start-line="128" selection-start-column="25" selection-end-line="128" selection-end-column="25" />
+        <state relative-caret-position="192">
+          <caret line="12" column="33" selection-start-line="12" selection-start-column="33" selection-end-line="12" selection-end-column="33" />
           <folding>
-            <element signature="imports" expanded="true" />
             <element signature="e#2400#2928#0" expanded="true" />
             <element signature="e#2927#2928#0" expanded="true" />
           </folding>

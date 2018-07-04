@@ -4,7 +4,7 @@ public class Point {
     private double posX;
     private long mass;
 
-    public long getMass() {
+    long getMass() {
         return mass;
     }
 

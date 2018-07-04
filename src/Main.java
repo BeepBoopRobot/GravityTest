@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
+// Rewrite the calcForce function
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
@@ -81,11 +81,11 @@ public class Main {
             @Override
             public void handle(long now) {
                 gc.clearRect(0, 0, windowWidth, windowHeight);
+                if (showLines) drawLines(al, gc);
                 for (Point p : al) {
                     gc.fillRect(p.getPosX(), p.getPosY(), 5, 5);
                     gc.fillText(String.valueOf(al.indexOf(p)), p.getPosX() + 6, p.getPosY() + 6);
                 }
-                if (showLines) drawLines(al, gc);
                 for (Point p : al) p.update(fr);
                 fr.updateFPS(now, gc);
             }
