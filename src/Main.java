@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Stack;
 
 public class Main {
@@ -23,7 +24,7 @@ public class Main {
     private static int windowWidth = 1000;
     private static int windowHeight = 1000;
     private static int maxLength = (int) Math.hypot(windowWidth, windowHeight);
-    private static boolean showLines = true;
+    private static boolean showLines = false, showDist = false;
 
     static int getWindowWidth() {
         return windowWidth;
@@ -52,6 +53,8 @@ public class Main {
                 System.exit(0);
             } else if (ke.getCode().equals(KeyCode.W)) {
                 showLines = !showLines;
+            } else if (ke.getCode().equals(KeyCode.S) && showLines) {
+                showDist = !showDist;
             }
         });
 
@@ -62,11 +65,11 @@ public class Main {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setStroke(Color.BLACK);
         gc.setFont(new Font("Comic Sans MS", 8));
-
+        Random rnd = new Random();
         ArrayList<Point> al = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            al.add(new Point(Math.ceil(Math.random() * 5),
-                    Math.ceil(Math.random() * 5),
+        for (int i = 0; i < 100; i++) {
+            al.add(new Point(Math.ceil(rnd.nextDouble() * 1000 - 500),
+                    rnd.nextDouble() * 1000 - 500,
                     (int) Math.ceil(Math.random() * windowWidth),
                     (int) Math.ceil(Math.random() * windowHeight),
                     (int) Math.ceil(Math.random() * 100000 + 50000)));
@@ -83,7 +86,7 @@ public class Main {
                     gc.fillText(String.valueOf(al.indexOf(p)), p.getPosX() + 6, p.getPosY() + 6);
                 }
                 if (showLines) drawLines(al, gc);
-                for (Point p : al) p.update();
+                for (Point p : al) p.update(fr);
                 fr.updateFPS(now, gc);
             }
         };
@@ -107,15 +110,14 @@ public class Main {
                 gc.setStroke(Color.rgb(redRat, 0, blueRat));
                 gc.strokeLine(p.getPosX(), p.getPosY(), a.getPosX(), a.getPosY());
 
-                gc.fillText(String.valueOf((int) distance),
+                if(showDist) {gc.fillText(String.valueOf((int) distance),
                         p.getPosX() + ((a.getPosX() - p.getPosX()) / 2),
                         p.getPosY() + ((a.getPosY() - p.getPosY()) / 2));
+                }
             }
             stack.pop();
         }
     }
-
-    private static double G = 4 ;
 
     private static void calcForce(Point m1, Point m2) {
         System.out.println(4000 * (6.67408 * Math.pow(10, -11)));
@@ -124,6 +126,6 @@ public class Main {
         System.out.println("Top: " + top);
         double bottom = Math.pow(Math.hypot(m2.getPosX() - m1.getPosX(), m2.getPosY() - m1.getPosY()), 2);
         System.out.println("Bottom: " + bottom);
-        System.out.println(top/bottom);
+        System.out.println(top / bottom);
     }
 }

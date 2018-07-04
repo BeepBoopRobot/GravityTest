@@ -54,14 +54,14 @@ public class Point {
         this.mass = mass;
     }
 
-    void update() {
-        double nextX = posX + dx;
+    void update(FrameRegulator fr) {
+        double nextX = posX + (dx * fr.getFrameLength());
         if(nextX >= Main.getWindowWidth() || nextX <= 0) {
             nextX = posX;
             dx = -dx;
         }
         posX = nextX;
-        double nextY = posY + dy;
+        double nextY = posY + (dy * fr.getFrameLength());
         if(nextY >= Main.getWindowHeight() || nextY <= 0) {
             nextY = posY;
             dy = -dy;
