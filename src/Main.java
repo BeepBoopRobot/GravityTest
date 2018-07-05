@@ -10,7 +10,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-// Rewrite the calcForce function
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
@@ -21,8 +20,8 @@ public class Main {
         Platform.runLater(Main::launch);
     }
 
-    private static int windowWidth = 1000;
-    private static int windowHeight = 1000;
+    private static int windowWidth = 800;
+    private static int windowHeight = 800;
     private static int maxLength = (int) Math.hypot(windowWidth, windowHeight);
     private static boolean showLines = false, showDist = false;
 
@@ -64,18 +63,18 @@ public class Main {
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setStroke(Color.BLACK);
+        gc.setLineWidth(2);
         gc.setFont(new Font("Comic Sans MS", 8));
         Random rnd = new Random();
         ArrayList<Point> al = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 200; i++) {
             al.add(new Point(Math.ceil(rnd.nextDouble() * 1000 - 500),
                     rnd.nextDouble() * 1000 - 500,
                     (int) Math.ceil(Math.random() * windowWidth),
                     (int) Math.ceil(Math.random() * windowHeight),
-                    (int) Math.ceil(Math.random() * 100000 + 50000)));
+                    (long) Math.ceil(Math.random() * 100000000 + 50000000)));
         }
         FrameRegulator fr = new FrameRegulator();
-        calcForce(al.get(0), al.get(1));
 
         AnimationTimer at = new AnimationTimer() {
             @Override
@@ -84,7 +83,7 @@ public class Main {
                 if (showLines) drawLines(al, gc);
                 for (Point p : al) {
                     gc.fillRect(p.getPosX(), p.getPosY(), 5, 5);
-                    gc.fillText(String.valueOf(al.indexOf(p)), p.getPosX() + 6, p.getPosY() + 6);
+                    gc.fillText(String.valueOf(p.getMass()), p.getPosX() + 6, p.getPosY() + 6);
                 }
                 for (Point p : al) p.update(fr);
                 fr.updateFPS(now, gc);
@@ -93,7 +92,6 @@ public class Main {
 
         at.start();
         scene.setOnMousePressed(me -> at.stop());
-
         scene.setOnMouseReleased(me -> at.start());
     }
 
@@ -110,22 +108,12 @@ public class Main {
                 gc.setStroke(Color.rgb(redRat, 0, blueRat));
                 gc.strokeLine(p.getPosX(), p.getPosY(), a.getPosX(), a.getPosY());
 
-                if(showDist) {gc.fillText(String.valueOf((int) distance),
+                if(showDist) {gc.fillText(String.valueOf(Physics.calcForce(p.getMass(), a.getMass(), distance)),
                         p.getPosX() + ((a.getPosX() - p.getPosX()) / 2),
                         p.getPosY() + ((a.getPosY() - p.getPosY()) / 2));
                 }
             }
             stack.pop();
         }
-    }
-
-    private static void calcForce(Point m1, Point m2) {
-        System.out.println(4000 * (6.67408 * Math.pow(10, -11)));
-        System.out.println("M1 Mass: " + m1.getMass() + ", M2 mass: " + m2.getMass() + ", Distance: " + Math.hypot(m2.getPosX() - m1.getPosX(), m2.getPosY() - m1.getPosY()));
-        double top = m1.getMass() * m2.getMass() * (6.67408 * Math.pow(10, -11));
-        System.out.println("Top: " + top);
-        double bottom = Math.pow(Math.hypot(m2.getPosX() - m1.getPosX(), m2.getPosY() - m1.getPosY()), 2);
-        System.out.println("Bottom: " + bottom);
-        System.out.println(top / bottom);
     }
 }

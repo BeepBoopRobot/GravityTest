@@ -46,7 +46,7 @@ public class Point {
 
     private double posY;
 
-    Point(double dx, double dy, int posX, int posY, int mass) {
+    Point(double dx, double dy, int posX, int posY, long mass) {
         this.dx = dx;
         this.dy = dy;
         this.posX = posX;
