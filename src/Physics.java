@@ -6,9 +6,4 @@ class Physics {
 
         return top/bottom;
     }
-
-    static int getBearing(Point p1, Point p2) {
-        int bearing = 4;
-        return bearing;
-    }
 }
