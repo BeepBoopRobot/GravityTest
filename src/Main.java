@@ -10,10 +10,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
 
+//ToDO: Maybe add multithreading?
 public class Main {
     public static void main(String[] args) {
         new JFXPanel();
@@ -67,7 +69,7 @@ public class Main {
         gc.setFont(new Font("Comic Sans MS", 8));
         Random rnd = new Random();
         ArrayList<Point> al = new ArrayList<>();
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 5; i++) {
             al.add(new Point(Math.ceil(rnd.nextDouble() * 1000 - 500),
                     rnd.nextDouble() * 1000 - 500,
                     (int) Math.ceil(Math.random() * windowWidth),
@@ -89,7 +91,6 @@ public class Main {
                 fr.updateFPS(now, gc);
             }
         };
-
         at.start();
         scene.setOnMousePressed(me -> at.stop());
         scene.setOnMouseReleased(me -> at.start());
@@ -108,12 +109,15 @@ public class Main {
                 gc.setStroke(Color.rgb(redRat, 0, blueRat));
                 gc.strokeLine(p.getPosX(), p.getPosY(), a.getPosX(), a.getPosY());
 
-                if(showDist) {gc.fillText(String.valueOf(Physics.calcForce(p.getMass(), a.getMass(), distance)),
-                        p.getPosX() + ((a.getPosX() - p.getPosX()) / 2),
-                        p.getPosY() + ((a.getPosY() - p.getPosY()) / 2));
+                if (showDist) {
+                    gc.fillText(String.valueOf(Physics.calcForce(p.getMass(), a.getMass(), distance)),
+                            p.getPosX() + ((a.getPosX() - p.getPosX()) / 2),
+                            p.getPosY() + ((a.getPosY() - p.getPosY()) / 2));
                 }
             }
             stack.pop();
         }
     }
+
+
 }
