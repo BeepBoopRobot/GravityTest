@@ -10,8 +10,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Stack;
 
 public class Main {
@@ -20,8 +20,10 @@ public class Main {
         Platform.runLater(Main::launch);
     }
 
-    private static int windowWidth = 1000;
-    private static int windowHeight = 1000;
+    private static int windowWidth = 800;
+    private static int windowHeight = 800;
+    private static int maxLength = (int) Math.hypot(windowWidth, windowHeight);
+    private static boolean showLines = false, showDist = false;
 
     static int getWindowWidth() {
         return windowWidth;
@@ -48,6 +50,10 @@ public class Main {
         scene.setOnKeyPressed(ke -> {
             if (ke.getCode().equals(KeyCode.ESCAPE)) {
                 System.exit(0);
+            } else if (ke.getCode().equals(KeyCode.W)) {
+                showLines = !showLines;
+            } else if (ke.getCode().equals(KeyCode.S) && showLines) {
+                showDist = !showDist;
             }
         });
 
@@ -57,53 +63,55 @@ public class Main {
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setStroke(Color.BLACK);
+        gc.setLineWidth(2);
         gc.setFont(new Font("Comic Sans MS", 8));
-
+        Random rnd = new Random();
         ArrayList<Point> al = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            al.add(new Point((int) Math.ceil(Math.random() * 5),
-                    (int) Math.ceil(Math.random() * 5),
+        for (int i = 0; i < 200; i++) {
+            al.add(new Point(Math.ceil(rnd.nextDouble() * 1000 - 500),
+                    rnd.nextDouble() * 1000 - 500,
                     (int) Math.ceil(Math.random() * windowWidth),
-                    (int) Math.ceil(Math.random() * windowHeight)));
+                    (int) Math.ceil(Math.random() * windowHeight),
+                    (long) Math.ceil(Math.random() * 100000000 + 50000000)));
         }
+        FrameRegulator fr = new FrameRegulator();
 
         AnimationTimer at = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 gc.clearRect(0, 0, windowWidth, windowHeight);
+                if (showLines) drawLines(al, gc);
                 for (Point p : al) {
                     gc.fillRect(p.getPosX(), p.getPosY(), 5, 5);
-                    gc.fillText(String.valueOf(al.indexOf(p)), p.getPosX() + 6, p.getPosY() + 6);
+                    gc.fillText(String.valueOf(p.getMass()), p.getPosX() + 6, p.getPosY() + 6);
                 }
-                drawLines(al, gc);
-                for (Point p : al) p.update();
-
+                for (Point p : al) p.update(fr);
+                fr.updateFPS(now, gc);
             }
         };
 
         at.start();
-        scene.setOnMousePressed(me -> {
-            at.stop();
-        });
-
-        scene.setOnMouseReleased(me -> {
-            at.start();
-        });
+        scene.setOnMousePressed(me -> at.stop());
+        scene.setOnMouseReleased(me -> at.start());
     }
 
     private static void drawLines(ArrayList<Point> temp, GraphicsContext gc) {
         Stack<Point> stack = new Stack<>();
-        for(Point p: temp) stack.push(p);
+        for (Point p : temp) stack.push(p);
         while (stack.size() != 1) {
             Point p = stack.peek();
             for (Point a : stack) {
                 if (a == p) break;
-                gc.strokeLine(p.getPosX(), p.getPosY(), a.getPosX(), a.getPosY());
                 double distance = Math.hypot(a.getPosX() - p.getPosX(), a.getPosY() - p.getPosY());
+                int redRat = (int) ((1 - (distance / maxLength)) * 255);
+                int blueRat = (int) ((distance / maxLength) * 255);
+                gc.setStroke(Color.rgb(redRat, 0, blueRat));
+                gc.strokeLine(p.getPosX(), p.getPosY(), a.getPosX(), a.getPosY());
 
-                gc.fillText(String.valueOf((float)distance),
-                        p.getPosX() + ((a.getPosX() - p.getPosX())/2),
-                        p.getPosY() + ((a.getPosY() - p.getPosY())/2));
+                if(showDist) {gc.fillText(String.valueOf(Physics.calcForce(p.getMass(), a.getMass(), distance)),
+                        p.getPosX() + ((a.getPosX() - p.getPosX()) / 2),
+                        p.getPosY() + ((a.getPosY() - p.getPosY()) / 2));
+                }
             }
             stack.pop();
         }
