@@ -1,3 +1,5 @@
+import java.util.HashMap;
+
 public class Point {
     private double dx;
     private double dy;
@@ -56,13 +58,13 @@ public class Point {
 
     void update(FrameRegulator fr) {
         double nextX = posX + (dx * fr.getFrameLength());
-        if(nextX >= Main.getWindowWidth() || nextX <= 0) {
+        if (nextX >= Main.getWindowWidth() || nextX <= 0) {
             nextX = posX;
             dx = -dx;
         }
         posX = nextX;
         double nextY = posY + (dy * fr.getFrameLength());
-        if(nextY >= Main.getWindowHeight() || nextY <= 0) {
+        if (nextY >= Main.getWindowHeight() || nextY <= 0) {
             nextY = posY;
             dy = -dy;
         }

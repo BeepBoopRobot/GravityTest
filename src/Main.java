@@ -10,20 +10,24 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.Stack;
 
+//ToDO: Maybe add multithreading?
 public class Main {
     public static void main(String[] args) {
         new JFXPanel();
         Platform.runLater(Main::launch);
     }
 
-    private static int windowWidth = 800;
-    private static int windowHeight = 800;
+    private static int windowWidth = 500;
+    private static int windowHeight = 500;
     private static int maxLength = (int) Math.hypot(windowWidth, windowHeight);
     private static boolean showLines = false, showDist = false;
+    private static FrameRegulator fr = new FrameRegulator();
 
     static int getWindowWidth() {
         return windowWidth;
@@ -67,32 +71,38 @@ public class Main {
         gc.setFont(new Font("Comic Sans MS", 8));
         Random rnd = new Random();
         ArrayList<Point> al = new ArrayList<>();
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 5; i++) {
             al.add(new Point(Math.ceil(rnd.nextDouble() * 1000 - 500),
                     rnd.nextDouble() * 1000 - 500,
                     (int) Math.ceil(Math.random() * windowWidth),
                     (int) Math.ceil(Math.random() * windowHeight),
                     (long) Math.ceil(Math.random() * 100000000 + 50000000)));
         }
-        FrameRegulator fr = new FrameRegulator();
-
         AnimationTimer at = new AnimationTimer() {
+            private long last = 0;
+
             @Override
             public void handle(long now) {
-                gc.clearRect(0, 0, windowWidth, windowHeight);
-                if (showLines) drawLines(al, gc);
-                for (Point p : al) {
-                    gc.fillRect(p.getPosX(), p.getPosY(), 5, 5);
-                    gc.fillText(String.valueOf(p.getMass()), p.getPosX() + 6, p.getPosY() + 6);
+                if (now - last >= 16_000_000) {
+                    render(now, al, gc);
+                    last = now;
                 }
-                for (Point p : al) p.update(fr);
-                fr.updateFPS(now, gc);
             }
         };
-
         at.start();
         scene.setOnMousePressed(me -> at.stop());
         scene.setOnMouseReleased(me -> at.start());
+    }
+
+    private static void render(long now, ArrayList<Point> al, GraphicsContext gc) {
+        gc.clearRect(0, 0, windowWidth, windowHeight);
+        if (showLines) drawLines(al, gc);
+        for (Point p : al) {
+            gc.fillRect(p.getPosX(), p.getPosY(), 5, 5);
+            gc.fillText(String.valueOf(p.getMass()), p.getPosX() + 6, p.getPosY() + 6);
+        }
+        for (Point p : al) p.update(fr);
+        fr.updateFPS(now, gc);
     }
 
     private static void drawLines(ArrayList<Point> temp, GraphicsContext gc) {
@@ -108,12 +118,15 @@ public class Main {
                 gc.setStroke(Color.rgb(redRat, 0, blueRat));
                 gc.strokeLine(p.getPosX(), p.getPosY(), a.getPosX(), a.getPosY());
 
-                if(showDist) {gc.fillText(String.valueOf(Physics.calcForce(p.getMass(), a.getMass(), distance)),
-                        p.getPosX() + ((a.getPosX() - p.getPosX()) / 2),
-                        p.getPosY() + ((a.getPosY() - p.getPosY()) / 2));
+                if (showDist) {
+                    gc.fillText(String.valueOf(Physics.calcForce(p.getMass(), a.getMass(), distance)),
+                            p.getPosX() + ((a.getPosX() - p.getPosX()) / 2),
+                            p.getPosY() + ((a.getPosY() - p.getPosY()) / 2));
                 }
             }
             stack.pop();
         }
     }
+
+
 }

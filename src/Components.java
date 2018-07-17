@@ -1,7 +1,9 @@
 public class Components {
-    //ToDo: Populate this class with functions to calculate bearings and xy components of forces
-    static int getBearing(Point p1, Point p2) {
-        int bearing = 4;
-        return bearing;
+    static double getXComponent(int x1, int x2, double distance) {
+        return Math.abs(x2 - x1) / distance;
+    }
+
+    static double getYComponent(int y1, int y2, double distance) {
+        return Math.abs(y2 - y1) / distance;
     }
 }
