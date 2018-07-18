@@ -14,17 +14,18 @@ import javafx.stage.StageStyle;
 import java.util.ArrayList;
 import java.util.Random;
 
-//ToDO: Maybe add multithreading?
 public class Main {
     public static void main(String[] args) {
         new JFXPanel();
         Platform.runLater(Main::launch);
     }
 
-    private static int windowWidth = 500;
-    private static int windowHeight = 500;
+    private static int Points = 4;
+
+    private static int windowWidth = 700;
+    private static int windowHeight = 700;
     private static int maxLength = (int) Math.hypot(windowWidth, windowHeight);
-    private static boolean showLines = false, showDist = false;
+    private static boolean showLines = false, showDist = false,showVector = false;
     private static FrameRegulator fr = new FrameRegulator();
 
     static int getWindowWidth() {
@@ -56,6 +57,8 @@ public class Main {
                 showLines = !showLines;
             } else if (ke.getCode().equals(KeyCode.S) && showLines) {
                 showDist = !showDist;
+            } else if (ke.getCode().equals(KeyCode.A)) {
+                showVector = !showVector;
             }
         });
 
@@ -69,7 +72,7 @@ public class Main {
         gc.setFont(new Font("Comic Sans MS", 8));
         Random rnd = new Random();
         ArrayList<Point> al = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < Points; i++) {
             al.add(new Point(Math.ceil(rnd.nextDouble() * 100 - 50),
                     rnd.nextDouble() * 100 - 50,
                     (int) Math.ceil(Math.random() * windowWidth),
@@ -99,7 +102,7 @@ public class Main {
             gc.fillRect(p.getPosX(), p.getPosY(), 5, 5);
             gc.fillText(String.valueOf(Math.hypot(p.getDy(), p.getDx())), p.getPosX() + 6, p.getPosY() + 6);
             gc.fillText(String.valueOf(al.indexOf(p)), p.getPosX() + 6, p.getPosY() + 15);
-            gc.strokeLine(p.getPosX(), p.getPosY(), p.getPosX() + p.getDx(), p.getPosY() + p.getDy());
+            if(showVector)gc.strokeLine(p.getPosX(), p.getPosY(), p.getPosX() + p.getDx(), p.getPosY() + p.getDy());
         }
         for (Point p : al) p.update(fr);
         fr.updateFPS(now, gc);
@@ -117,7 +120,7 @@ public class Main {
                 double distance = Math.hypot(x2 - x1, y2 - y1);
 
                 if (distance != 0) {
-                    double A = Physics.getA(a.getMass(), distance);
+                    double A = getA(a.getMass(), distance);
                     if (x1 > x2) {
                         double newDx = p.getDx() - (A * fr.getFrameLength() * 100000000 * (Math.abs(x2 - x1) / distance));
                         p.setDx(newDx);
@@ -141,7 +144,7 @@ public class Main {
                     gc.setStroke(Color.rgb(redRat, 0, blueRat));
                     gc.strokeLine(x1, y1, x2, y2);
                     if (showDist) {
-                        gc.fillText(String.valueOf(Physics.calcForce(p.getMass(), a.getMass(), distance)),
+                        gc.fillText(String.valueOf(distance),
                                 x1 + ((x2 - x1) / 2),
                                 y1 + ((y2 - y1) / 2));
                     }
@@ -149,6 +152,14 @@ public class Main {
             }
             //stack.pop();
         }
+    }
+
+    private static double G = 6.67408 * Math.pow(10, -11);
+
+    static double getA(long mass, double distance) {
+        double top = G * mass;
+        double bottom = distance * distance;
+        return top / bottom;
     }
 
 
