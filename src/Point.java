@@ -4,14 +4,12 @@ public class Point {
     private double dx;
     private double dy;
     private double posX;
+    private double posY;
     private long mass;
+
 
     long getMass() {
         return mass;
-    }
-
-    public void setMass(long mass) {
-        this.mass = mass;
     }
 
     public double getDx() {
@@ -34,19 +32,9 @@ public class Point {
         return posX;
     }
 
-    public void setPosX(double posX) {
-        this.posX = posX;
-    }
-
     double getPosY() {
         return posY;
     }
-
-    public void setPosY(double posY) {
-        this.posY = posY;
-    }
-
-    private double posY;
 
     Point(double dx, double dy, int posX, int posY, long mass) {
         this.dx = dx;

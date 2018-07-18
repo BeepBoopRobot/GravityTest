@@ -15,7 +15,4 @@ class Physics {
         return top / bottom;
     }
 
-    static double getResultant(ArrayList<Point> al) {
-        return 0;
-    }
 }
