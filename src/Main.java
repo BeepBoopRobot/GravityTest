@@ -20,13 +20,13 @@ public class Main {
         Platform.runLater(Main::launch);
     }
 
-    private static int Points = 4;
+    private static int Points = 20;
+    static double frameRate = 60;
 
     private static int windowWidth = 700;
     private static int windowHeight = 700;
     private static int maxLength = (int) Math.hypot(windowWidth, windowHeight);
-    private static boolean showLines = false, showDist = false,showVector = false;
-    private static FrameRegulator fr = new FrameRegulator();
+    private static boolean showLines = false, showDist = false, showVector = false, fake = false;
 
     static int getWindowWidth() {
         return windowWidth;
@@ -73,8 +73,8 @@ public class Main {
         Random rnd = new Random();
         ArrayList<Point> al = new ArrayList<>();
         for (int i = 0; i < Points; i++) {
-            al.add(new Point(Math.ceil(rnd.nextDouble() * 100 - 50),
-                    rnd.nextDouble() * 100 - 50,
+            al.add(new Point(Math.ceil(rnd.nextDouble() * 0.5 - 0.5),
+                    rnd.nextDouble() * 0.5 - 0.5,
                     (int) Math.ceil(Math.random() * windowWidth),
                     (int) Math.ceil(Math.random() * windowHeight),
                     (long) Math.ceil(Math.random() * 100000000 + 50000000)));
@@ -84,7 +84,8 @@ public class Main {
 
             @Override
             public void handle(long now) {
-                if (now - last >= 16_000_000) {
+                double fps = 1 / frameRate;
+                if (now - last >= (fps * Math.pow(10, 6))) {
                     render(now, al, gc);
                     last = now;
                 }
@@ -102,13 +103,17 @@ public class Main {
             gc.fillRect(p.getPosX(), p.getPosY(), 5, 5);
             gc.fillText(String.valueOf(Math.hypot(p.getDy(), p.getDx())), p.getPosX() + 6, p.getPosY() + 6);
             gc.fillText(String.valueOf(al.indexOf(p)), p.getPosX() + 6, p.getPosY() + 15);
-            if(showVector)gc.strokeLine(p.getPosX(), p.getPosY(), p.getPosX() + p.getDx(), p.getPosY() + p.getDy());
+            if (showVector) gc.strokeLine(p.getPosX(), p.getPosY(), p.getPosX() + p.getDx() * 50, p.getPosY() + p.getDy() * 50);
         }
-        for (Point p : al) p.update(fr);
-        fr.updateFPS(now, gc);
+        for (Point p : al) p.update();
     }
 
     private static void drawLines(ArrayList<Point> al, GraphicsContext gc) {
+        double frameLength = 1 / frameRate;
+        if (!fake) {
+            System.out.println(frameLength);
+            fake = true;
+        }
         for (Point p : al) {
 
             double x1 = p.getPosX();
@@ -119,21 +124,21 @@ public class Main {
                 double y2 = a.getPosY();
                 double distance = Math.hypot(x2 - x1, y2 - y1);
 
-                if (distance != 0) {
+                if (distance != 0 && distance > 20) {
                     double A = getA(a.getMass(), distance);
                     if (x1 > x2) {
-                        double newDx = p.getDx() - (A * fr.getFrameLength() * 100000000 * (Math.abs(x2 - x1) / distance));
+                        double newDx = p.getDx() - (A * frameLength * 1_000_000 * (Math.abs(x2 - x1) / distance));
                         p.setDx(newDx);
                     } else {
-                        double newDx = p.getDx() + (A * fr.getFrameLength() * 100000000 * (Math.abs(x2 - x1) / distance));
+                        double newDx = p.getDx() + (A * frameLength * 1_000_000 * (Math.abs(x2 - x1) / distance));
                         p.setDx(newDx);
                     }
 
                     if (y1 > y2) {
-                        double newDy = p.getDy() - (A * fr.getFrameLength() * 100000000 * (Math.abs(y2 - y1) / distance));
+                        double newDy = p.getDy() - (A * frameLength * 1_000_000 * (Math.abs(y2 - y1) / distance));
                         p.setDy(newDy);
                     } else {
-                        double newDy = p.getDy() + (A * fr.getFrameLength() * 100000000 * (Math.abs(y2 - y1) / distance));
+                        double newDy = p.getDy() + (A * frameLength * 1_000_000 * (Math.abs(y2 - y1) / distance));
                         p.setDy(newDy);
                     }
                 }
@@ -156,7 +161,7 @@ public class Main {
 
     private static double G = 6.67408 * Math.pow(10, -11);
 
-    static double getA(long mass, double distance) {
+    private static double getA(long mass, double distance) {
         double top = G * mass;
         double bottom = distance * distance;
         return top / bottom;
