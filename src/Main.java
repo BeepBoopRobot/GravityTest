@@ -20,13 +20,12 @@ public class Main {
         Platform.runLater(Main::launch);
     }
 
-    private static int Points = 20;
-    static double frameRate = 60;
+    private static double frameRate = 60;
 
     private static int windowWidth = 700;
     private static int windowHeight = 700;
     private static int maxLength = (int) Math.hypot(windowWidth, windowHeight);
-    private static boolean showLines = false, showDist = false, showVector = false, fake = false;
+    private static boolean showLines = false, showDist = false, showVector = false;
 
     static int getWindowWidth() {
         return windowWidth;
@@ -72,12 +71,13 @@ public class Main {
         gc.setFont(new Font("Comic Sans MS", 8));
         Random rnd = new Random();
         ArrayList<Point> al = new ArrayList<>();
-        for (int i = 0; i < Points; i++) {
+        int points = 20;
+        for (int i = 0; i < points; i++) {
             al.add(new Point(Math.ceil(rnd.nextDouble() * 0.5 - 0.5),
                     rnd.nextDouble() * 0.5 - 0.5,
                     (int) Math.ceil(Math.random() * windowWidth),
                     (int) Math.ceil(Math.random() * windowHeight),
-                    (long) Math.ceil(Math.random() * 100000000 + 50000000)));
+                    (long) Math.ceil(Math.random() * 100_000_000 + 50_000_000)));
         }
         AnimationTimer at = new AnimationTimer() {
             private long last = 0;
@@ -86,7 +86,7 @@ public class Main {
             public void handle(long now) {
                 double fps = 1 / frameRate;
                 if (now - last >= (fps * Math.pow(10, 6))) {
-                    render(now, al, gc);
+                    render(al, gc);
                     last = now;
                 }
             }
@@ -96,24 +96,21 @@ public class Main {
         scene.setOnMouseReleased(me -> at.start());
     }
 
-    private static void render(long now, ArrayList<Point> al, GraphicsContext gc) {
+    private static void render(ArrayList<Point> al, GraphicsContext gc) {
         gc.clearRect(0, 0, windowWidth, windowHeight);
         drawLines(al, gc);
         for (Point p : al) {
             gc.fillRect(p.getPosX(), p.getPosY(), 5, 5);
             gc.fillText(String.valueOf(Math.hypot(p.getDy(), p.getDx())), p.getPosX() + 6, p.getPosY() + 6);
             gc.fillText(String.valueOf(al.indexOf(p)), p.getPosX() + 6, p.getPosY() + 15);
-            if (showVector) gc.strokeLine(p.getPosX(), p.getPosY(), p.getPosX() + p.getDx() * 50, p.getPosY() + p.getDy() * 50);
+            if (showVector)
+                gc.strokeLine(p.getPosX(), p.getPosY(), p.getPosX() + p.getDx() * 50, p.getPosY() + p.getDy() * 50);
         }
         for (Point p : al) p.update();
     }
 
     private static void drawLines(ArrayList<Point> al, GraphicsContext gc) {
         double frameLength = 1 / frameRate;
-        if (!fake) {
-            System.out.println(frameLength);
-            fake = true;
-        }
         for (Point p : al) {
 
             double x1 = p.getPosX();

@@ -1,5 +1,5 @@
 
-public class Point {
+class Point {
     private double dx;
     private double dy;
     private double posX;
@@ -11,19 +11,19 @@ public class Point {
         return mass;
     }
 
-    public double getDx() {
+    double getDx() {
         return dx;
     }
 
-    public void setDx(double dx) {
+    void setDx(double dx) {
         this.dx = dx;
     }
 
-    public double getDy() {
+    double getDy() {
         return dy;
     }
 
-    public void setDy(double dy) {
+    void setDy(double dy) {
         this.dy = dy;
     }
 
