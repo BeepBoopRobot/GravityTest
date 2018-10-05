@@ -13,7 +13,7 @@ import javafx.stage.StageStyle;
 
 import java.util.ArrayList;
 import java.util.Random;
-
+//Idea: Add a "stick" function, so that when two  particles collide with enough speed, they stick together and share velocity vectors and collision. How do rotation? (intrinsic?)
 public class Main {
     public static void main(String[] args) {
         new JFXPanel();
