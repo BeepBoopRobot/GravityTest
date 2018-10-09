@@ -47,13 +47,13 @@ class Point {
         double nextX = posX + dx;
         if (nextX >= Main.getWindowWidth() || nextX <= 0) {
             nextX = posX;
-            dx = -dx;
+            dx = -dx*0.6;
         }
         posX = nextX;
         double nextY = posY + dy;
         if (nextY >= Main.getWindowHeight() || nextY <= 0) {
             nextY = posY;
-            dy = -dy;
+            dy = -dy*0.6;
         }
         posY = nextY;
     }

@@ -14,16 +14,18 @@ import javafx.stage.StageStyle;
 import java.util.ArrayList;
 import java.util.Random;
 //Idea: Add a "stick" function, so that when two  particles collide with enough speed, they stick together and share velocity vectors and collision. How do rotation? (intrinsic?)
+
 public class Main {
     public static void main(String[] args) {
+        System.out.println(Short.MAX_VALUE - Short.MIN_VALUE);
         new JFXPanel();
         Platform.runLater(Main::launch);
     }
 
     private static double frameRate = 60;
 
-    private static int windowWidth = 700;
-    private static int windowHeight = 700;
+    private static int windowWidth = 1000;
+    private static int windowHeight = 1000;
     private static int maxLength = (int) Math.hypot(windowWidth, windowHeight);
     private static boolean showLines = false, showDist = false, showVector = false;
 
@@ -71,14 +73,17 @@ public class Main {
         gc.setFont(new Font("Comic Sans MS", 8));
         Random rnd = new Random();
         ArrayList<Point> al = new ArrayList<>();
-        int points = 20;
+
+        int points = 200;
         for (int i = 0; i < points; i++) {
-            al.add(new Point(Math.ceil(rnd.nextDouble() * 0.5 - 0.5),
+            al.add(new Point(rnd.nextDouble() * 0.5 - 0.5,
                     rnd.nextDouble() * 0.5 - 0.5,
                     (int) Math.ceil(Math.random() * windowWidth),
                     (int) Math.ceil(Math.random() * windowHeight),
                     (long) Math.ceil(Math.random() * 100_000_000 + 50_000_000)));
         }
+
+
         AnimationTimer at = new AnimationTimer() {
             private long last = 0;
 
@@ -100,9 +105,9 @@ public class Main {
         gc.clearRect(0, 0, windowWidth, windowHeight);
         drawLines(al, gc);
         for (Point p : al) {
-            gc.fillRect(p.getPosX(), p.getPosY(), 5, 5);
-            gc.fillText(String.valueOf(Math.hypot(p.getDy(), p.getDx())), p.getPosX() + 6, p.getPosY() + 6);
-            gc.fillText(String.valueOf(al.indexOf(p)), p.getPosX() + 6, p.getPosY() + 15);
+            gc.fillOval(p.getPosX()-10, p.getPosY()-10, 20, 20);
+           // gc.fillText(String.valueOf(Math.hypot(p.getDy(), p.getDx())), p.getPosX() + 6, p.getPosY() + 6);
+           /// gc.fillText(String.valueOf(al.indexOf(p)), p.getPosX() + 6, p.getPosY() + 15);
             if (showVector)
                 gc.strokeLine(p.getPosX(), p.getPosY(), p.getPosX() + p.getDx() * 50, p.getPosY() + p.getDy() * 50);
         }
@@ -119,7 +124,7 @@ public class Main {
             for (Point a : al) {
                 double x2 = a.getPosX();
                 double y2 = a.getPosY();
-                double distance = Math.hypot(x2 - x1, y2 - y1);
+                double distance = Math.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
 
                 if (distance != 0 && distance > 20) {
                     double A = getA(a.getMass(), distance);
@@ -128,7 +133,7 @@ public class Main {
                         p.setDx(newDx);
                     } else {
                         double newDx = p.getDx() + (A * frameLength * 1_000_000 * (Math.abs(x2 - x1) / distance));
-                        p.setDx(newDx);
+                        p.setDx(newDx);s
                     }
 
                     if (y1 > y2) {
@@ -152,7 +157,6 @@ public class Main {
                     }
                 }
             }
-            //stack.pop();
         }
     }
 
