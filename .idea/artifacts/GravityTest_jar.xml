@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="GravityTest:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/GravityTest_jar</output-path>
+    <root id="archive" name="GravityTest.jar">
+      <element id="module-output" name="GravityTest" />
+    </root>
+  </artifact>
+</component>

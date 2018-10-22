@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="GravityTest">
+    <output-path>$PROJECT_DIR$/out/artifacts/GravityTest</output-path>
+    <root id="root">
+      <element id="archive" name="GravityTest.jar">
+        <element id="module-output" name="GravityTest" />
+      </element>
+    </root>
+  </artifact>
+</component>
