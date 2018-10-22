@@ -14,10 +14,19 @@ import javafx.stage.StageStyle;
 import java.util.ArrayList;
 import java.util.Random;
 //Idea: Add a "stick" function, so that when two  particles collide with enough speed, they stick together and share velocity vectors and collision. How do rotation? (intrinsic?)
+//ToDo: sort out scales and trig functions
 
+/*
+soeirierjoew#r
+kwe
+prk#[ewkrpwke
+rkwe#[r#
+*/
 public class Main {
     public static void main(String[] args) {
-        System.out.println(Short.MAX_VALUE - Short.MIN_VALUE);
+        Trig.generateSin();
+        System.out.println(Math.sin(Math.PI));
+        System.out.println(Trig.sin(Short.MAX_VALUE));
         new JFXPanel();
         Platform.runLater(Main::launch);
     }
@@ -84,15 +93,17 @@ public class Main {
         }
 
 
+        final int[] stop = {0};
         AnimationTimer at = new AnimationTimer() {
             private long last = 0;
 
             @Override
             public void handle(long now) {
                 double fps = 1 / frameRate;
-                if (now - last >= (fps * Math.pow(10, 6))) {
+                if (now - last >= (fps * Math.pow(10, 6)) && stop[0] <50000) {
                     render(al, gc);
                     last = now;
+                    stop[0]++;
                 }
             }
         };
@@ -105,9 +116,9 @@ public class Main {
         gc.clearRect(0, 0, windowWidth, windowHeight);
         drawLines(al, gc);
         for (Point p : al) {
-            gc.fillOval(p.getPosX()-10, p.getPosY()-10, 20, 20);
-           // gc.fillText(String.valueOf(Math.hypot(p.getDy(), p.getDx())), p.getPosX() + 6, p.getPosY() + 6);
-           /// gc.fillText(String.valueOf(al.indexOf(p)), p.getPosX() + 6, p.getPosY() + 15);
+            gc.fillOval(p.getPosX() - 10, p.getPosY() - 10, 20, 20);
+            // gc.fillText(String.valueOf(Math.hypot(p.getDy(), p.getDx())), p.getPosX() + 6, p.getPosY() + 6);
+            // gc.fillText(String.valueOf(al.indexOf(p)), p.getPosX() + 6, p.getPosY() + 15);
             if (showVector)
                 gc.strokeLine(p.getPosX(), p.getPosY(), p.getPosX() + p.getDx() * 50, p.getPosY() + p.getDy() * 50);
         }
@@ -117,14 +128,13 @@ public class Main {
     private static void drawLines(ArrayList<Point> al, GraphicsContext gc) {
         double frameLength = 1 / frameRate;
         for (Point p : al) {
-
             double x1 = p.getPosX();
             double y1 = p.getPosY();
 
             for (Point a : al) {
                 double x2 = a.getPosX();
                 double y2 = a.getPosY();
-                double distance = Math.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
+                double distance = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 
                 if (distance != 0 && distance > 20) {
                     double A = getA(a.getMass(), distance);
@@ -133,7 +143,8 @@ public class Main {
                         p.setDx(newDx);
                     } else {
                         double newDx = p.getDx() + (A * frameLength * 1_000_000 * (Math.abs(x2 - x1) / distance));
-                        p.setDx(newDx);s
+                        p.setDx(newDx);
+
                     }
 
                     if (y1 > y2) {
