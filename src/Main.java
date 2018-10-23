@@ -13,15 +13,11 @@ import javafx.stage.StageStyle;
 
 import java.util.ArrayList;
 import java.util.Random;
+
 //Idea: Add a "stick" function, so that when two  particles collide with enough speed, they stick together and share velocity vectors and collision. How do rotation? (intrinsic?)
 //ToDo: sort out scales and trig functions
+//ToDo: Remove the line drawing section and separate out the calculations
 
-/*
-soeirierjoew#r
-kwe
-prk#[ewkrpwke
-rkwe#[r#
-*/
 public class Main {
     public static void main(String[] args) {
         Trig.generateSin();
@@ -36,7 +32,7 @@ public class Main {
     private static int windowWidth = 1000;
     private static int windowHeight = 1000;
     private static int maxLength = (int) Math.hypot(windowWidth, windowHeight);
-    private static boolean showLines = false, showDist = false, showVector = false;
+    private static boolean showLines = false, showDist = false, showVector = true;
 
     static int getWindowWidth() {
         return windowWidth;
@@ -83,7 +79,7 @@ public class Main {
         Random rnd = new Random();
         ArrayList<Point> al = new ArrayList<>();
 
-        int points = 200;
+        int points = 2000;
         for (int i = 0; i < points; i++) {
             al.add(new Point(rnd.nextDouble() * 0.5 - 0.5,
                     rnd.nextDouble() * 0.5 - 0.5,
@@ -120,7 +116,7 @@ public class Main {
             // gc.fillText(String.valueOf(Math.hypot(p.getDy(), p.getDx())), p.getPosX() + 6, p.getPosY() + 6);
             // gc.fillText(String.valueOf(al.indexOf(p)), p.getPosX() + 6, p.getPosY() + 15);
             if (showVector)
-                gc.strokeLine(p.getPosX(), p.getPosY(), p.getPosX() + p.getDx() * 50, p.getPosY() + p.getDy() * 50);
+                gc.strokeLine(p.getPosX(), p.getPosY(), p.getPosX() + p.getDx() * 1, p.getPosY() + p.getDy() * 1);
         }
         for (Point p : al) p.update();
     }
@@ -171,7 +167,7 @@ public class Main {
         }
     }
 
-    private static double G = 6.67408 * Math.pow(10, -11);
+    private static double G = 6.67408e-11;
 
     private static double getA(long mass, double distance) {
         double top = G * mass;
