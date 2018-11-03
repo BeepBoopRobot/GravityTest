@@ -29,8 +29,8 @@ public class Main {
 
     private static double frameRate = 60;
 
-    private static int windowWidth = 1000;
-    private static int windowHeight = 1000;
+    private static int windowWidth = 700;
+    private static int windowHeight = 700;
     private static int maxLength = (int) Math.hypot(windowWidth, windowHeight);
     private static boolean showLines = false, showDist = false, showVector = true;
 
@@ -89,17 +89,15 @@ public class Main {
         }
 
 
-        final int[] stop = {0};
         AnimationTimer at = new AnimationTimer() {
             private long last = 0;
 
             @Override
             public void handle(long now) {
                 double fps = 1 / frameRate;
-                if (now - last >= (fps * Math.pow(10, 6)) && stop[0] <50000) {
+                if (now - last >= 16_000_000) {
                     render(al, gc);
                     last = now;
-                    stop[0]++;
                 }
             }
         };
