@@ -79,7 +79,7 @@ public class Main {
         Random rnd = new Random();
         ArrayList<Point> al = new ArrayList<>();
 
-        int points = 2000;
+        int points = 200;
         for (int i = 0; i < points; i++) {
             al.add(new Point(rnd.nextDouble() * 0.5 - 0.5,
                     rnd.nextDouble() * 0.5 - 0.5,
