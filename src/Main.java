@@ -28,9 +28,10 @@ public class Main {
     }
 
     private static double frameRate = 60;
+    private static int points = 5;
 
-    private static int windowWidth = 700;
-    private static int windowHeight = 700;
+    private static int windowWidth = 1000;
+    private static int windowHeight = 1000;
     private static int maxLength = (int) Math.hypot(windowWidth, windowHeight);
     private static boolean showLines = false, showDist = false, showVector = true;
 
@@ -79,13 +80,12 @@ public class Main {
         Random rnd = new Random();
         ArrayList<Point> al = new ArrayList<>();
 
-        int points = 200;
         for (int i = 0; i < points; i++) {
             al.add(new Point(rnd.nextDouble() * 0.5 - 0.5,
                     rnd.nextDouble() * 0.5 - 0.5,
                     (int) Math.ceil(Math.random() * windowWidth),
                     (int) Math.ceil(Math.random() * windowHeight),
-                    (long) Math.ceil(Math.random() * 100_000_000 + 50_000_000)));
+                    (long) Math.ceil(Math.random() * 1_000_000 + 500_000)));
         }
 
 
@@ -97,6 +97,7 @@ public class Main {
                 double fps = 1 / frameRate;
                 if (now - last >= 16_000_000) {
                     render(al, gc);
+                    calculate(al, gc);
                     last = now;
                 }
             }
@@ -108,9 +109,9 @@ public class Main {
 
     private static void render(ArrayList<Point> al, GraphicsContext gc) {
         gc.clearRect(0, 0, windowWidth, windowHeight);
-        drawLines(al, gc);
         for (Point p : al) {
             gc.fillOval(p.getPosX() - 10, p.getPosY() - 10, 20, 20);
+            gc.fillText(String.valueOf(time), 0, 40);
             // gc.fillText(String.valueOf(Math.hypot(p.getDy(), p.getDx())), p.getPosX() + 6, p.getPosY() + 6);
             // gc.fillText(String.valueOf(al.indexOf(p)), p.getPosX() + 6, p.getPosY() + 15);
             if (showVector)
@@ -119,53 +120,81 @@ public class Main {
         for (Point p : al) p.update();
     }
 
-    private static void drawLines(ArrayList<Point> al, GraphicsContext gc) {
-        double frameLength = 1 / frameRate;
-        for (Point p : al) {
-            double x1 = p.getPosX();
-            double y1 = p.getPosY();
+    private static double time;
 
-            for (Point a : al) {
-                double x2 = a.getPosX();
-                double y2 = a.getPosY();
-                double distance = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+    private static void bonk(Point a, Point b) {
+        long m1 = a.getMass();
+        long m2 = b.getMass();
 
-                if (distance != 0 && distance > 20) {
-                    double A = getA(a.getMass(), distance);
-                    if (x1 > x2) {
-                        double newDx = p.getDx() - (A * frameLength * 1_000_000 * (Math.abs(x2 - x1) / distance));
-                        p.setDx(newDx);
+        //calculate y velocities
+        double v_y1 = a.getDy();
+        double v_y2 = b.getDy();
+        b.setDy(((float) (2 * m1) / (m1 + m2)) * v_y1 - ((float) (m1 - m2) / (m1 + m2)) * v_y2);
+        a.setDy(((float) (m1 - m2) / (m1 + m2)) * v_y1 - ((float) (2 * m2) / (m1 + m2)) * v_y2);
+
+        //calculate x velocities
+        double v_x1 = a.getDx();
+        double v_x2 = b.getDx();
+        b.setDx(((float) (2 * m1) / (m1 + m2)) * v_x1 - ((float) (m1 - m2) / (m1 + m2)) * v_x2);
+        a.setDx(((float) (m1 - m2) / (m1 + m2)) * v_x1 - ((float) (2 * m2) / (m1 + m2)) * v_x2);
+
+    }
+
+    private static void calculate(ArrayList<Point> al, GraphicsContext gc) {
+        for (int i = 0; i < 1; i++) {
+            double frameLength = (1 / frameRate);
+            for (Point p : al) {
+                double x1 = p.getPosX();
+                double y1 = p.getPosY();
+
+                for (Point a : al) {
+                    double x2 = a.getPosX();
+                    double y2 = a.getPosY();
+                    double distance = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+                    /*Collision detection will need to:
+                 - Handle realistic momentum transfers on each collision (
+                 - Not allow points to be stuck into each other
+                 - Be able to support the coalition feature*/
+
+                    if (distance <= 20) {
+                       // bonk(a,p);
                     } else {
-                        double newDx = p.getDx() + (A * frameLength * 1_000_000 * (Math.abs(x2 - x1) / distance));
-                        p.setDx(newDx);
+                        double A = getA(a.getMass(), distance);
+                        if (x1 > x2) {
+                            double newDx = p.getDx() - (A * frameLength * (Math.abs(x2 - x1) / distance));
+                            p.setDx(newDx);
+                        } else {
+                            double newDx = p.getDx() + (A * frameLength * (Math.abs(x2 - x1) / distance));
+                            p.setDx(newDx);
 
+                        }
+
+                        if (y1 > y2) {
+                            double newDy = p.getDy() - (A * frameLength * (Math.abs(y2 - y1) / distance));
+                            p.setDy(newDy);
+                        } else {
+                            double newDy = p.getDy() + (A * frameLength * (Math.abs(y2 - y1) / distance));
+                            p.setDy(newDy);
+                        }
                     }
 
-                    if (y1 > y2) {
-                        double newDy = p.getDy() - (A * frameLength * 1_000_000 * (Math.abs(y2 - y1) / distance));
-                        p.setDy(newDy);
-                    } else {
-                        double newDy = p.getDy() + (A * frameLength * 1_000_000 * (Math.abs(y2 - y1) / distance));
-                        p.setDy(newDy);
-                    }
-                }
-
-                if (showLines) {
-                    int redRat = (int) ((1 - (distance / maxLength)) * 255);
-                    int blueRat = (int) ((distance / maxLength) * 255);
-                    gc.setStroke(Color.rgb(redRat, 0, blueRat));
-                    gc.strokeLine(x1, y1, x2, y2);
-                    if (showDist) {
-                        gc.fillText(String.valueOf(distance),
-                                x1 + ((x2 - x1) / 2),
-                                y1 + ((y2 - y1) / 2));
+                    if (showLines) {
+                        int redRat = (int) ((1 - (distance / maxLength)) * 255);
+                        int blueRat = (int) ((distance / maxLength) * 255);
+                        gc.setStroke(Color.rgb(redRat, 0, blueRat));
+                        gc.strokeLine(x1, y1, x2, y2);
+                        if (showDist) {
+                            gc.fillText(String.valueOf(distance),
+                                    x1 + ((x2 - x1) / 2),
+                                    y1 + ((y2 - y1) / 2));
+                        }
                     }
                 }
             }
         }
     }
 
-    private static double G = 6.67408e-11;
+    private static double G = 6.67408e-4;
 
     private static double getA(long mass, double distance) {
         double top = G * mass;

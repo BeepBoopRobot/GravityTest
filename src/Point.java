@@ -6,7 +6,6 @@ class Point {
     private double posY;
     private long mass;
 
-
     long getMass() {
         return mass;
     }
