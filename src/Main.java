@@ -152,7 +152,7 @@ public class Main {
                     double y2 = a.getPosY();
                     double distance = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
                     /*Collision detection will need to:
-                 - Handle realistic momentum transfers on each collision (
+                 - Handle realistic momentum transfers on each collision (including scaling)
                  - Not allow points to be stuck into each other
                  - Be able to support the coalition feature*/
 
